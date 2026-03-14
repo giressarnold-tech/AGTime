@@ -1,0 +1,40 @@
+
+        body {
+            background-color: #f4f6fb;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, #4b6cb7, #182848);
+        }
+
+        .navbar-brand, .nav-link, .navbar-text {
+            color: #fff !important;
+        }
+
+        .stat-card {
+            border-radius: 14px;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .bg-users { background: linear-gradient(135deg, #1abc9c, #16a085); }
+        .bg-pending { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .bg-approved { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .bg-refused { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+
+        .stat-card i {
+            font-size: 2.8rem;
+            opacity: 0.85;
+        }
+
+        .badge-active {
+            background-color: #2ecc71;
+        }
+
+        .badge-inactive {
+            background-color: #e74c3c;
+        }
+
+        .card {
+            border-radius: 14px;
+        }

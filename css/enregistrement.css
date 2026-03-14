@@ -1,0 +1,20 @@
+form{
+    max-width: 550px;
+    border: solid;
+    border-radius: 5%;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+h1{
+    color: white; 
+    position: absolute; 
+    top: 10rem; 
+    left: 43rem; 
+    font-size: 50px; 
+}
+img{
+    position: relative; 
+    border-radius: 5%;
+}
+
+    

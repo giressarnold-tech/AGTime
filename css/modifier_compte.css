@@ -1,0 +1,43 @@
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+    height: 100vh;
+    color: white;
+}
+
+.sidebar h4 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    padding: 12px 20px;
+    display: block;
+}
+
+.sidebar a.active,
+.sidebar a:hover {
+    background-color: rgba(255,255,255,0.15);
+    border-radius: 6px;
+}
+
+/* Card */
+.card {
+    border-radius: 12px;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+/* Switch */
+.form-switch .form-check-input {
+    width: 3em;
+    height: 1.5em;
+}

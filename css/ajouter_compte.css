@@ -1,0 +1,28 @@
+/* Sidebar */
+.sidebar {
+    background-color: #343a40;
+    height: 100vh;
+    color: white;
+}
+.sidebar a {
+    display: block;
+    padding: 12px 20px;
+    color: #adb5bd;
+    text-decoration: none;
+    border-radius: 6px;
+    margin-bottom: 4px;
+}
+
+.sidebar a:hover, .sidebar a.active {
+    background-color: #495057;
+    color: #fff;
+}
+
+/* Form card */
+.card {
+    border-radius: 12px;
+}
+
+.form-label {
+    font-weight: 500;
+}

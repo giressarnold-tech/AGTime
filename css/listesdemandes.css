@@ -1,0 +1,27 @@
+
+body {
+    background-color: #f4f6f9;
+}
+
+.sidebar {
+    background-color: #198754;
+    height: 100vh;
+    color: white;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    padding: 12px 20px;
+    display: block;
+}
+
+.sidebar a.active,
+.sidebar a:hover {
+    background-color: rgba(255,255,255,0.15);
+    border-radius: 6px;
+}
+
+.badge-pending { background-color: #ffc107; }
+.badge-approved { background-color: #198754; }
+.badge-refused { background-color: #dc3545; }

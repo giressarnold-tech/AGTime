@@ -1,0 +1,155 @@
+
+ /*  
+    include_once('bd.php');
+    if(isset($_POST['ok'])){
+        $email = htmlspecialchars($_POST['email']);
+        $ft = htmlspecialchars($_POST['ft']);
+        $mdp = htmlspecialchars($_POST['mdp']);
+
+        $rq = $pdo->prepare("SELECT * FROM utilisateur WHERE email = ? AND mot_de_passe = ?");
+       // $prepare = $pdo->prepare($rq);
+        //$execute = $prepare->execute(array($email, $mdp));
+        $rq->execute([$email]);
+        //$seach = $prepare->rowCount();
+        //if ($seach == 1) {
+            // echo"welcome";
+        //}
+        //if ($ft == "ADMIN") {
+          //      header ('location: dashboardadmin2.html');
+            //}
+
+        if ($rq->rowCount() == 1) {
+
+        $user = $rq->fetch();
+
+        if (password_verify($mdp, $user['mot_de_passe'])) {
+
+            // 🧠 Sessions
+            $_SESSION['id']     = $user['id'];
+            $_SESSION['nom']    = $user['nom'];
+            $_SESSION['ft']   = $user['ft'];
+
+            // 🚦 Redirection selon le rôle
+            switch ($user['ft']) {
+
+                case 'admin':
+                    header('Location: dashboardadmin2.html');
+                    break;
+
+                case 'rh':
+                    header('Location: pageRH.html');
+                    break;
+
+                case 'employe':
+                    header('Location: pageemployé.html');
+                    break;
+
+                default:
+                    echo "Rôle inconnu ❌";
+            }
+            exit();
+
+        } else {
+            echo "❌ Mot de passe incorrect";
+        }
+
+    } else {
+        echo "❌ Email incorrect ou compte désactivé";
+    }
+    }
+*/
+
+session_start();
+include_once('bd.php');
+
+if (isset($_POST['login'])) {
+
+    $email = htmlspecialchars($_POST['email']);
+    $mdp   = $_POST['mdp'];
+
+    $req = $pdo->prepare("SELECT * FROM utilisateurs WHERE email = ? AND statut = 1");
+    $req->execute([$email]);
+
+    if ($req->rowCount() == 1) {
+
+        $user = $req->fetch();
+
+        if (password_verify($mdp, $user['mot_de_passe'])) {
+
+            // 🧠 Sessions
+            $_SESSION['id']     = $user['id'];
+            $_SESSION['nom']    = $user['nom'];
+            $_SESSION['role']   = $user['role'];
+
+            // 🚦 Redirection selon le rôle
+            switch ($user['role']) {
+
+                case 'admin':
+                    header('Location: dashboard_admin.php');
+                    break;
+
+                case 'rh':
+                    header('Location: dashboard_rh.php');
+                    break;
+
+                case 'employe':
+                    header('Location: dashboard_employe.php');
+                    break;
+
+                default:
+                    echo "Rôle inconnu ❌";
+            }
+            exit();
+
+        } else {
+            echo "❌ Mot de passe incorrect";
+        }
+
+    } else {
+        echo "❌ Email incorrect ou compte désactivé";
+    }
+} 
+
+
+
+// session_start();
+// include_once('bd.php');
+// if (isset($_POST['ok'])) {
+//     $email = htmlspecialchars($_POST['email']);
+//     $mdp   =htmlspecialchars( $_POST['mdp']);
+//     $ft = htmlspecialchars( $_POST['ft']);
+//     // 1️⃣ On cherche l'utilisateur par email uniquement
+//     $rq = $pdo->prepare("SELECT * FROM utilisateur WHERE email = ? AND mot_de_passe = ?");
+//     $rq->execute([$email, $mdp]);
+//     if ($rq->rowCount() === 1) {
+//         $user = $rq->fetch(PDO::FETCH_ASSOC);
+//         // 2️⃣ Vérification du mot de passe
+//         if (password_verify($mdp, $user['mot_de_passe'])) {
+//             // 🧠 Sessions
+//             $_SESSION['ft']   = $user['ft'];
+//             // 🚦 Redirection selon le rôle
+//             switch ($user['ft']) {
+//                 case 'administrateur':
+//                     header('Location: dashboardadmin2.html');
+//                     break;
+//                 case 'RH':
+//                     header('Location: pageRH.html');
+//                     break;
+//                 case 'employe':
+//                     header('Location: pageemploye.html');
+//                     break;
+//                 default:
+//                     echo "❌ Rôle inconnu";
+//             }
+//             exit();
+
+//         } else {
+//             echo "❌ Mot de passe incorrect";
+//         }
+
+//     } else {
+//         echo "❌ Email incorrect ou compte désactivé";
+//     }
+// }
+
+<

@@ -1,0 +1,59 @@
+
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, #4b6cb7, #182848);
+        }
+
+        .navbar-brand, .nav-link, .navbar-text {
+            color: #fff !important;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            height: 100vh;
+            background-color: #343a40;
+            color: #fff;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 12px 20px;
+            color: #adb5bd;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 4px;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #495057;
+            color: #fff;
+        }
+
+        /* Cards statistiques */
+        .card-stat {
+            border-radius: 12px;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .bg-users { background: linear-gradient(135deg, #6c5ce7, #341f97); }
+        .bg-requests { background: linear-gradient(135deg, #00b894, #019267); }
+        .bg-approved { background: linear-gradient(135deg, #0984e3, #0652dd); }
+        .bg-inactive { background: linear-gradient(135deg, #d63031, #b71c1c); }
+
+        .card-stat i {
+            font-size: 2.5rem;
+            opacity: 0.85;
+        }
+
+        .table thead {
+            background-color: #e9ecef;
+        }
+
+        .btn-action {
+            margin-right: 5px;
+        }

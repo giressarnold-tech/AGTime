@@ -1,0 +1,21 @@
+body {
+    background-color: #f4f6f9;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+
+/* Contenu */
+.content {
+    padding: 40px;
+}
+
+/* Carte suppression */
+.delete-card {
+    max-width: 520px;
+    margin: 100px auto;
+    border-radius: 12px;
+}
+
+.warning-icon {
+    font-size: 56px;
+}

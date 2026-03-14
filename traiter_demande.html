@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title> AG-TIME </title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Roboto:wght@500;700;900&display=swap" rel="stylesheet"> 
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script source="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap -->
+    <link href="./bootstrap/bootstrap-5.1.3-dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+<!-- Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Template Stylesheet -->
+    <link href="css/traiter_demande.css" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="60x60" href="img/Logo contemporain AG-Time sur fond blanc.png">
+    
+</head>
+<body>
+
+<div class="container py-5">
+
+    <!-- Titre -->
+    <h2 class="text-center mb-4 fw-bold">Traitement de la Demande</h2>
+
+    <!-- Carte infos demande -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <p><strong>Demandeur :</strong> <i class="bi bi-person"></i> Marie Dupont</p>
+            <hr>
+
+            <p><strong>Type de demande :</strong> Congé de maladie</p>
+            <hr>
+
+            <p><strong>Motif :</strong> Maladie – grippe</p>
+            <hr>
+
+            <p><strong>Date de soumission :</strong> 12 Mai 2024</p>
+            <hr>
+
+            <p>
+                <strong>Statut actuel :</strong>
+                <span class="status-badge">En attente</span>
+            </p>
+
+        </div>
+    </div>
+
+    <!-- Zone décision -->
+    <div class="text-center mb-4">
+        <h5 class="fw-semibold">Prendre une décision</h5>
+    </div>
+
+    <form id="decisionForm">
+
+        <!-- Boutons -->
+        <div class="d-flex justify-content-center gap-4 mb-4">
+            <button type="button" class="btn btn-success btn-lg" onclick="choisirDecision('acceptée')">
+                <i class="bi bi-check-circle"></i> Accepter
+            </button>
+
+            <button type="button" class="btn btn-danger btn-lg" onclick="choisirDecision('refusée')">
+                <i class="bi bi-x-circle"></i> Refuser
+            </button>
+        </div>
+
+        <!-- Commentaire -->
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Commentaires (optionnel)</label>
+            <textarea class="form-control" rows="4" placeholder="Ajouter un commentaire..."></textarea>
+        </div>
+
+        <!-- Champ caché -->
+        <input type="hidden" id="decision" name="decision">
+
+        <!-- Bouton envoyer -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary px-5 py-2">
+                Envoyer la décision
+            </button>
+        </div>
+
+    </form>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- JS -->
+<script>
+    function choisirDecision(valeur) {
+        document.getElementById('decision').value = valeur;
+
+        alert("Décision sélectionnée : " + valeur);
+    }
+
+    document.getElementById('decisionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const decision = document.getElementById('decision').value;
+
+        if (decision === '') {
+            alert("Veuillez choisir accepter ou refuser.");
+            return;
+        }
+
+        alert("Décision envoyée : " + decision);
+
+        // Ici tu feras le POST vers traiter_demande.php
+    });
+</script>
+
+</body>
+</html>

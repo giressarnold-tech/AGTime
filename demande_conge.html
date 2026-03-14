@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title> AG-TIME </title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Roboto:wght@500;700;900&display=swap" rel="stylesheet"> 
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script source="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap -->
+    <link href="./bootstrap/bootstrap-5.1.3-dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+<!-- Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Template Stylesheet -->
+    <link href="css/demande_conge.css" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="60x60" href="img/ChatGPT Image 25 févr. 2026, 12_47_24.png">
+    <link rel="stylesheet" href="/bootstrap/bootstrap-5.1.3-dist/css/bootstrap.css">
+</head>
+<body>
+    <!-- sign up-->
+    <div class="container py-3 mt-3">
+
+        <form action="demande.php" method="post" class="row">         
+                <div class="container mb-5 py-3 col-12">
+                    <img class="col-12" src="img/Logo contemporain AG-Time sur fond blanc.png" alt="Logo AG-TIME" style="height:290px;">
+                </div>
+
+                <div class="col-4 mb-3">
+                    <div class="form-floating">
+                        <input type="name" name="nom" class="form-control" id="nom" placeholder="username">
+                        <label for="username">nom</label>
+                    </div>
+                </div>
+
+                <div class="col-4 mb-3">
+                    <div class="form-floating">
+                        <input type="name" name="prenom" class="form-control" id="prenom" placeholder="username">
+                        <label for="username">prenom</label>
+                    </div>
+                </div>
+
+                <div class="col-4 form-floating">
+                    <select name="type_demande" class="form-select form-control" required>
+                        <option value="roles"><label for="role" class="form-label">selectionner le type de demande </label></option>
+                        <option>CONGE</option>
+                        <option>PERMISSION</option>
+                    </select>
+                </div>
+
+                <div class="col-4 mb-3">
+                    <div class="form-floating">
+                        <input type="date" name="date_debut" class="form-control" id="date_debut" placeholder="date debut " requiered>
+                        <label for="date debut "> date debut  </label>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="form-floating">
+                        <input type="date" name="date_fin" class="form-control" id="date_fin" placeholder="date fin " requiered>
+                        <label for="date fin "> date fin  </label>
+                    </div>
+                </div>
+                
+                <div class="col-4">
+                    <div class="form-floating">
+                        <input type="text" name="raison" class="form-control" id="raison" placeholder="raison  " requiered>
+                        <label for="date fin "> raison </label>
+                    </div>
+                </div>
+
+               <center>
+                    <button class="btn btn-outline-primary mb-3 col-4" type="submit" value="envoyer" name="envoyer"> envoyer </button>
+               </center>
+                
+                
+            </form>
+
+        
+    </div>
+<!-- sign up end -->
+</body>
+</html>
