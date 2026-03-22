@@ -23,20 +23,21 @@ if(isset($_POST['envoyer'])){
     $result = $pdo->query($sqlRH);
     if ($execute) {
         echo "✅ Demande soumise avec succès.";
-    header('Location: pageemploye.php?id_employe='+$id_employe);
+        header('Location: pageemployé.php');
+        //header('Location: pageemploye.php?id_employe='+$id_employe);
     } else {
     echo "❌ Tous les champs sont requis pour soumettre une demande.";
     }
 
     // 🔔 Notification aux RH et ADMIN
 
-    // while($row = $result->fetchAll(PDO::FETCH_ASSOC)){ 
-    //      $message = "Nouvelle demande de congé en attente.";
-    //      $insertNotif = $conn->prepare(
-    //          "INSERT INTO notification (id_user, message) VALUES (?, ?)");
-    //      $insertNotif->bind_param("is", $row['id_user'], $message);
-    //      $insertNotif->execute();
-    //  }
+    while($row = $result->fetchAll(PDO::FETCH_ASSOC)){ 
+         $message = "Nouvelle demande de congé en attente.";
+         $insertNotif = $conn->prepare(
+             "INSERT INTO notification (id_user, message) VALUES (?, ?)");
+         $insertNotif->bind_param("is", $row['id_user'], $message);
+         $insertNotif->execute();
+     }
     }
     function getId($pdo,$n,$prn){
         $rq = "SELECT e.id_employe FROM employe e INNER JOIN utilisateur u ON e.id_user = u.id_user

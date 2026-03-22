@@ -96,7 +96,8 @@
             </ul>
             <span class="navbar-text ms-3">
                 <?php
-                session_start();
+ 
+                 // session_start();
 
                 // Vérifier que l'utilisateur est connecté
                 if(!isset($_SESSION['id_user'])) {
@@ -119,7 +120,7 @@
         <div class="col-md-3">
             <div class="stat-card bg-users shadow d-flex justify-content-between align-items-center">
                 <div>
-                    <h6>Total employés</h6>
+                    <h6><a class="navbar-brand" href="listeEmployeIndex.php">Total employés</a></h6>
                     <h2 id="totalUsers">0</h2>
                 </div>
                 <i class="bi bi-people"></i>
@@ -129,7 +130,7 @@
         <div class="col-md-3">
             <div class="stat-card bg-pending shadow d-flex justify-content-between align-items-center">
                 <div>
-                    <h6>Demandes en attente</h6>
+                    <h6><a class="navbar-brand" href="listedesdemandes.html">Demandes en attente</a></h6>
                     <h2 id="pendingRequests">0</h2>
                 </div>
                 <i class="bi bi-hourglass-split"></i>
@@ -139,7 +140,7 @@
         <div class="col-md-3">
             <div class="stat-card bg-approved shadow d-flex justify-content-between align-items-center">
                 <div>
-                    <h6>Demandes validées</h6>
+                    <h6><a class="navbar-brand" href="listedesdemandes.html">Demandes validées</a></h6>
                     <h2 id="approvedRequests">0</h2>
                 </div>
                 <i class="bi bi-check-circle"></i>
@@ -149,7 +150,7 @@
         <div class="col-md-3">
             <div class="stat-card bg-refused shadow d-flex justify-content-between align-items-center">
                 <div>
-                    <h6>Demandes refusées</h6>
+                    <h6><a class="navbar-brand" href="listedesdemandes.html" style="text-decoration: none;">Demandes refusées</a></h6>
                     <h2 id="refusedRequests">0</h2>
                 </div>
                 <i class="bi bi-x-circle"></i>
