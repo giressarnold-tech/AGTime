@@ -2,7 +2,7 @@
 include_once("bd.php");
 
 // Récupération de tous les utilisateurs sauf les admins
-$rq = " SELECT u.id_user, u.nom, u.prenom, u.tel, u.email, u.mot_de_passe,
+$rq = " SELECT u.id_user, u.matricule, u.matricule, u.nom, u.prenom, u.tel, u.email, u.mot_de_passe,
            CASE 
                WHEN e.id_user IS NOT NULL THEN 'Employé'
                WHEN r.id_user IS NOT NULL THEN 'RH'
@@ -152,7 +152,8 @@ $utilisateurs = $statement->fetchAll(PDO::FETCH_ASSOC);
                 <table class="table table-hover align-middle">
                         <thead class="table-success">
                             <tr>
-                                <th>id_emp</th>
+                                <th style="display: none;">id_emp</th>
+                                <th>matricule</th>
                                 <th>Nom</th>
                                 <th>prenom</th>
                                 <th>telephone</th>
@@ -167,7 +168,8 @@ $utilisateurs = $statement->fetchAll(PDO::FETCH_ASSOC);
                             <?php if($utilisateurs): ?>
                                 <?php foreach($utilisateurs as $user): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($user['id_user']) ?></td>
+                                    <td style="display: none;"><?= htmlspecialchars($user['id_user']) ?></td>
+                                    <td><?= htmlspecialchars($user['matricule']) ?></td>
                                     <td><?= htmlspecialchars($user['nom']) ?></td>
                                     <td><?= htmlspecialchars($user['prenom']) ?></td>
                                     <td><?= htmlspecialchars($user['tel']) ?></td>

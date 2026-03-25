@@ -1,7 +1,7 @@
 <?php 
      include_once("bd.php");
 
-    $rq = "SELECT u.id_user, u.nom, u.prenom, u.tel, u.email, u.mot_de_passe
+    $rq = "SELECT u.id_user, u.matricule, u.nom, u.prenom, u.tel, u.email, u.mot_de_passe
            FROM utilisateur u JOIN rh e ON u.id_user=e.id_user";
     $statement = $pdo->query($rq);
     $rh = $statement->fetchAll(PDO::FETCH_ASSOC); 
@@ -86,7 +86,8 @@
                     <table class="table table-hover align-middle">
                         <thead class="table-success">
                             <tr>
-                                <th>id_rh</th>
+                                <th style="display: none;">id_rh</th>
+                                <th>Matricule</th>
                                 <th>Nom</th>
                                 <th>prenom</th>
                                 <th>telephone</th>
@@ -100,7 +101,8 @@
                             <?php if($rh): ?>
                             <?php foreach ($rh as $ep): ?>
                             <tr>
-                                <td> <?php echo htmlspecialchars($ep['id_user']) ?> </td>
+                                <td style="display: none;"> <?php echo htmlspecialchars($ep['id_user']) ?> </td>
+                                <td><?php echo htmlspecialchars($ep['matricule']) ?></td>
                                 <td><?php echo htmlspecialchars($ep['nom']) ?></td>
                                 <td><?php echo htmlspecialchars($ep['prenom']) ?></td>
                                 <td><?php echo htmlspecialchars($ep['tel']) ?></td>

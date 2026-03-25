@@ -2,6 +2,11 @@
     //session_start();
     include_once("bd.php");
 
+    function genererMat($id,$poste){
+        $an = date("y");
+        $mat = $poste."-".$an."-". sprintf('%03d', $id);
+        return $mat;
+    }
     if(isset($_POST["ajt"])){
         try {
             $pdo->beginTransaction();
@@ -17,23 +22,38 @@
             $execute = $prepare->execute([$nom,$prenom,$tel,$email,$mdp,$ft]); 
             
             $u_id = $pdo->lastInsertId();
+
+
             switch ($ft) {
                 case 'ADMIN':
                     $rqA = "INSERT INTO administrateur(id_user) VALUES (?)";
                     $prepare = $pdo->prepare($rqA);
                     $execute = $prepare->execute([$u_id]); 
+                    $mat1 = genererMat($u_id,"ADM");
+                    $rq1 = "UPDATE utilisateur SET matricule=? WHERE id_user=". $u_id;
+                    $prepare = $pdo->prepare($rq1);
+                    $execute = $prepare->execute([$mat1]); 
                     header('Location: dashboardadmin2.php');
                     break;
             case 'EMPLOYE':
                     $rqE = "INSERT INTO employe(id_user) VALUES (?)";
                     $prepare = $pdo->prepare($rqE);
                     $execute = $prepare->execute([$u_id]); 
+                    $mat2 = genererMat($u_id,"EMP");
+                    $rq2 = "UPDATE utilisateur SET matricule=? WHERE id_user=". $u_id;
+                    $prepare = $pdo->prepare($rq2);
+                    $execute = $prepare->execute([$mat2]);
+                    echo "alert('matricule')";
                     header('Location: dashboardadmin2.php');
                     break;
                 case 'RH':
                     $rqR = "INSERT INTO rh(id_user) VALUES (?)";
                     $prepare = $pdo->prepare($rqR);
                     $execute = $prepare->execute([$u_id]); 
+                    $mat3 = genererMat($u_id,"RH");
+                    $rq3 = "UPDATE utilisateur SET matricule=? WHERE id_user=". $u_id;
+                    $prepare = $pdo->prepare($rq3);
+                    $execute = $prepare->execute([$mat3]); 
                     header('Location: dashboardadmin2.php');
                         break;
                 default:
