@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : sam. 14 mars 2026 à 20:13
+-- Généré le : mer. 25 mars 2026 à 08:35
 -- Version du serveur : 10.4.24-MariaDB
 -- Version de PHP : 8.1.6
 
@@ -29,7 +29,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `administrateur` (
   `id_admin` int(11) NOT NULL,
-  `id_user` int(11) NOT NULL
+  `id_user` int(11) NOT NULL,
+  `matricule` varchar(15) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -49,15 +50,6 @@ CREATE TABLE `demande` (
   `date_demande` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Déchargement des données de la table `demande`
---
-
-INSERT INTO `demande` (`id_demande`, `id_employe`, `type_demande`, `date_debut`, `date_fin`, `motif`, `statut`, `date_demande`) VALUES
-(6, 17, 'PERMISSION', '2026-03-27', '2026-03-31', 'travaux', 'EN_ATTENTE', '2026-03-09 11:51:04'),
-(7, 17, 'CONGE', '2026-03-27', '2026-03-31', 'repos', 'EN_ATTENTE', '2026-03-09 11:53:28'),
-(8, 17, 'CONGE', '2026-03-27', '2026-03-31', 'repos', 'EN_ATTENTE', '2026-03-09 11:54:20');
-
 -- --------------------------------------------------------
 
 --
@@ -66,16 +58,16 @@ INSERT INTO `demande` (`id_demande`, `id_employe`, `type_demande`, `date_debut`,
 
 CREATE TABLE `employe` (
   `id_employe` int(11) NOT NULL,
-  `id_user` int(11) NOT NULL
+  `id_user` int(11) NOT NULL,
+  `matricule` varchar(15) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `employe`
 --
 
-INSERT INTO `employe` (`id_employe`, `id_user`) VALUES
-(17, 52),
-(19, 55);
+INSERT INTO `employe` (`id_employe`, `id_user`, `matricule`) VALUES
+(23, 62, NULL);
 
 -- --------------------------------------------------------
 
@@ -126,16 +118,16 @@ CREATE TABLE `poste` (
 CREATE TABLE `rh` (
   `id_rh` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
-  `fonction` varchar(50) DEFAULT NULL
+  `matricule` varchar(15) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `rh`
 --
 
-INSERT INTO `rh` (`id_rh`, `id_user`, `fonction`) VALUES
-(15, 51, NULL),
-(16, 53, NULL);
+INSERT INTO `rh` (`id_rh`, `id_user`, `matricule`) VALUES
+(18, 63, NULL),
+(19, 64, NULL);
 
 -- --------------------------------------------------------
 
@@ -145,6 +137,7 @@ INSERT INTO `rh` (`id_rh`, `id_user`, `fonction`) VALUES
 
 CREATE TABLE `utilisateur` (
   `id_user` int(11) NOT NULL,
+  `matricule` varchar(15) DEFAULT NULL,
   `nom` varchar(50) NOT NULL,
   `prenom` varchar(50) NOT NULL,
   `tel` varchar(12) NOT NULL,
@@ -159,14 +152,10 @@ CREATE TABLE `utilisateur` (
 -- Déchargement des données de la table `utilisateur`
 --
 
-INSERT INTO `utilisateur` (`id_user`, `nom`, `prenom`, `tel`, `email`, `mot_de_passe`, `role`, `actif`, `date_creation`) VALUES
-(44, 'giress', 'arnold', '687146628', 'giressarnold@gmail.com', '12345', 'ADMIN', 1, '2026-02-24 02:38:57'),
-(47, 'giress', 'arnold', '', 'arnold@gmail.com', 'giress', 'ADMIN', 1, '2026-02-24 02:42:16'),
-(50, 'grace ', 'medom', '678987652', 'grace@gmail.com', 'giress', 'ADMIN', 1, '2026-02-24 02:46:46'),
-(51, 'etekin', 'loic', '678987345', 'loic@gmail.com', 'rh', 'EMPLOYE', 1, '2026-02-24 02:48:22'),
-(52, 'ezechiel', 'paul', '678987654', 'ezechiel@gmail.com', 'papou', 'EMPLOYE', 1, '2026-02-24 02:50:20'),
-(53, 'delia', 'djouela', '693055530', 'djoueladelia@gmail.com', 'doma237', 'RH', 1, '2026-02-27 08:34:14'),
-(55, 'arnold', 'azerty', '654321798', 'qwerty@gmail.com', '123456789', 'EMPLOYE', 1, '2026-03-11 12:36:01');
+INSERT INTO `utilisateur` (`id_user`, `matricule`, `nom`, `prenom`, `tel`, `email`, `mot_de_passe`, `role`, `actif`, `date_creation`) VALUES
+(62, 'EMP-26-062', 'macabo', 'macabo', '45678', 'macabo@gmail.com', 'macabo', 'EMPLOYE', 1, '2026-03-24 14:20:07'),
+(63, 'RH-26-063', 'werytuio', 'eyrtuyu', '234567', 'qqq@gmail.com', 'qqqq', 'RH', 1, '2026-03-24 15:48:24'),
+(64, 'RH-26-064', 'deliora', 'delia', '67890987654', 'delia@gmail.com', 'doma237', 'RH', 1, '2026-03-24 16:09:27');
 
 -- --------------------------------------------------------
 
@@ -258,19 +247,19 @@ ALTER TABLE `validation`
 -- AUTO_INCREMENT pour la table `administrateur`
 --
 ALTER TABLE `administrateur`
-  MODIFY `id_admin` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_admin` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `demande`
 --
 ALTER TABLE `demande`
-  MODIFY `id_demande` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_demande` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT pour la table `employe`
 --
 ALTER TABLE `employe`
-  MODIFY `id_employe` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id_employe` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT pour la table `historique`
@@ -294,13 +283,13 @@ ALTER TABLE `poste`
 -- AUTO_INCREMENT pour la table `rh`
 --
 ALTER TABLE `rh`
-  MODIFY `id_rh` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_rh` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT pour la table `validation`
