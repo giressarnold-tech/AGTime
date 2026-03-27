@@ -1,231 +1,190 @@
- <?php 
+<?php
 session_start();
 include_once("bd.php");
 
-// Récupérer les infos de l'utilisateur à modifier
-$id = $_GET["id_user"];
-$st = $pdo->prepare("SELECT u.id_user, u.nom, u.prenom, u.tel, u.email, u.mot_de_passe, u.role, u.actif
-                     FROM utilisateur u
-                     JOIN employe e ON u.id_user = e.id_user
-                     WHERE u.id_user = ?");
-$st->execute([$id]);
-$ep = $st->fetch();
-
-// Traitement du formulaire
-if(isset($_POST['modifier'])){
-    $id_user = $_POST['id_user'];
-    $nom = htmlspecialchars($_POST['nom']);
-    $prenom = htmlspecialchars($_POST['prenom']);
-    $tel = htmlspecialchars($_POST['tel']);
-    $email = htmlspecialchars($_POST['email']);
-    $mot_de_passe = password_hash($_POST['mdp'], PASSWORD_DEFAULT); // Hachage sécurisé
-    $role = $_POST['role'];
-    $actif = isset($_POST['actif']) ? 1 : 0;
-
-    try {
-        // Mise à jour table utilisateur
-        $sql = "UPDATE utilisateur
-                SET nom = :nom,
-                    prenom = :prenom,
-                    tel = :tel,
-                    email = :email,
-                    mot_de_passe = :mot_de_passe,
-                    role = :role,
-                    actif = :actif
-                WHERE id_user = :id_user";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            ':nom' => $nom,
-            ':prenom' => $prenom,
-            ':tel' => $tel,
-            ':email' => $email,
-            ':mot_de_passe' => $mot_de_passe,
-            ':role' => $role,
-            ':actif' => $actif,
-            ':id_user' => $id_user
-        ]);
-
-        echo "<div class='alert alert-success'>Employé modifié avec succès !</div>";
-
-    } catch(PDOException $e) {
-        echo "<div class='alert alert-danger'>Erreur : " . $e->getMessage() . "</div>";
-    }
+if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'ADMIN') {
+    header("Location: connexion.php");
+    exit();
 }
 
+// Vérifier l'id passé en GET
+if (!isset($_GET['id_user']) || empty($_GET['id_user'])) {
+    header("Location: listeEmployeIndex.php");
+    exit();
+}
 
-// ?> 
+$id     = (int) $_GET['id_user'];
+$erreur = "";
+$succes = "";
 
+// ── Récupérer les données actuelles ───────────────────────────────────────────
+$st = $pdo->prepare("
+    SELECT u.id_user, u.matricule, u.nom, u.prenom, u.tel, u.email, u.mot_de_passe, u.actif
+    FROM utilisateur u
+    JOIN employe e ON u.id_user = e.id_user
+    WHERE u.id_user = ?
+");
+$st->execute([$id]);
+$ep = $st->fetch(PDO::FETCH_ASSOC);
+
+if (!$ep) {
+    header("Location: listeEmployeIndex.php");
+    exit();
+}
+
+// ── Traitement du formulaire de modification ───────────────────────────────────
+if (isset($_POST['modif'])) {
+    $nom    = htmlspecialchars(trim($_POST['nom']));
+    $prenom = htmlspecialchars(trim($_POST['prenom']));
+    $tel    = htmlspecialchars(trim($_POST['tel']));
+    $email  = htmlspecialchars(trim($_POST['email']));
+    $mdp    = htmlspecialchars(trim($_POST['mdp']));
+    $actif  = isset($_POST['actif']) ? 1 : 0;
+
+    if (empty($nom) || empty($prenom) || empty($tel) || empty($email) || empty($mdp)) {
+        $erreur = "Tous les champs sont obligatoires.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $erreur = "L'adresse email n'est pas valide.";
+    } else {
+        // Vérifier si l'email est déjà pris par quelqu'un d'autre
+        $chk = $pdo->prepare("SELECT id_user FROM utilisateur WHERE email = ? AND id_user != ?");
+        $chk->execute([$email, $id]);
+        if ($chk->rowCount() > 0) {
+            $erreur = "Cet email est déjà utilisé par un autre compte.";
+        } else {
+            $pdo->prepare("
+                UPDATE utilisateur
+                SET nom=?, prenom=?, tel=?, email=?, mot_de_passe=?, actif=?
+                WHERE id_user=?
+            ")->execute([$nom, $prenom, $tel, $email, $mdp, $actif, $id]);
+
+            $succes = "Compte modifié avec succès.";
+            // Recharger les données à jour
+            $st->execute([$id]);
+            $ep = $st->fetch(PDO::FETCH_ASSOC);
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title> AG-TIME </title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Roboto:wght@500;700;900&display=swap" rel="stylesheet"> 
-
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet">
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script  source="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" >
-    </script>
-
+    <title>AG-TIME — Modifier employé</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Bootstrap -->
-    <link href="./bootstrap/bootstrap-5.1.3-dist/css/bootstrap.min.css" rel="stylesheet">
-
-
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Template Stylesheet -->
-    <link href="css/modifier_compte.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="60x60" href="img/Logo contemporain AG-Time sur fond blanc.png">
-    
+    <style>
+        * { font-family: 'Roboto', sans-serif; }
+        body { background: #f0f2f5; display: flex; min-height: 100vh; }
+        .sidebar { width: 230px; min-height: 100vh; background: #0f3460; padding: 24px 16px; position: fixed; top: 0; left: 0; }
+        .sidebar h4 { color: #a8c7fa; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px; }
+        .sidebar a { display: flex; align-items: center; gap: 10px; color: #b2bec3; text-decoration: none; padding: 10px 12px; border-radius: 8px; font-size: 14px; margin-bottom: 4px; transition: background 0.2s, color 0.2s; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(255,255,255,0.1); color: #fff; }
+        .main-content { margin-left: 230px; padding: 32px; flex: 1; }
+        .form-card { background: #fff; border-radius: 14px; padding: 32px; max-width: 650px; box-shadow: 0 2px 16px rgba(0,0,0,0.07); }
+        .form-card h4 { font-weight: 700; color: #0f3460; margin-bottom: 4px; }
+        .form-label { font-size: 13px; font-weight: 500; color: #444; }
+        .form-control, .form-select { border-radius: 8px; border: 1.5px solid #dee2e6; padding: 11px 14px; font-size: 14px; transition: border-color 0.2s; }
+        .form-control:focus, .form-select:focus { border-color: #0f3460; box-shadow: 0 0 0 3px rgba(15,52,96,0.1); }
+        .form-control[readonly] { background: #f8f9fa; color: #888; }
+        .btn-modifier { background: #0f3460; color: white; border: none; border-radius: 8px; padding: 11px 28px; font-size: 14px; font-weight: 600; transition: background 0.2s; }
+        .btn-modifier:hover { background: #16213e; color: white; }
+        .divider { border-top: 1px solid #eee; margin: 20px 0; }
+        .alerte-succes { background: #f0fff4; border: 1.5px solid #b2dfdb; border-radius: 8px; color: #1a7a4a; padding: 12px 16px; font-size: 13px; display: flex; align-items: center; gap: 8px; margin-bottom: 20px; animation: fadeIn 0.3s ease; }
+        .alerte-erreur { background: #fff5f5; border: 1.5px solid #f5c6cb; border-radius: 8px; color: #c0392b; padding: 12px 16px; font-size: 13px; display: flex; align-items: center; gap: 8px; margin-bottom: 20px; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+        .matricule-badge { background: #e8f0fe; color: #0f3460; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; display: inline-block; margin-bottom: 20px; }
+    </style>
 </head>
-
 <body>
-
-<div class="container-fluid">
-<div class="row">
-
-<!-- SIDEBAR -->
-<div class="col-md-2 bg-primary sidebar p-3">
-    <h4><i class="bi bi-people-fill"></i> RH / Admin</h4>
-    <a href="#"><i class="bi bi-speedometer2"></i> Dashboard</a>
-    <a href="#"><i class="bi bi-file-text"></i> Demandes</a>
-    <a href="#" class="active"><i class="bi bi-people"></i> Utilisateurs</a>
-    <a href="#"><i class="bi bi-bar-chart"></i> Statistiques</a>
-    <a href="#"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
+<div class="sidebar">
+    <h4>Administration</h4>
+    <a href="dashboardadmin2.php"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a href="listeEmployeIndex.php" class="active"><i class="bi bi-people"></i> Employés</a>
+    <a href="listeRHIndex.php"><i class="bi bi-person-badge"></i> RH</a>
+    <a href="listedesdemandes.php"><i class="bi bi-calendar2-check"></i> Demandes</a>
+    <a href="ajouter_compte.php"><i class="bi bi-person-plus"></i> Ajouter compte</a>
+    <a href="logout.php"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
 </div>
-
-<!-- CONTENU -->
-<div class="col-md-10 p-4">
-
-<h3 class="mb-4">
-    <i class="bi bi-person-plus-fill"></i> modifier personnel
-</h3>
-
-<div class="card shadow-sm p-4">
-<form id="userForm" method="POST" action="">
-
-<div class="row mb-3">
-
-    <div class="col-md-6">
-        <label class="form-label" for="id_user">id_user</label>
-        <input type="text" value="<?= $ep['id_user'] ?>" name="id_user" class="form-control" placeholder="id_user" readonly>
+<div class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 style="font-weight:700; color:#0f3460; margin:0;">Modifier un employé</h4>
+            <p style="font-size:13px; color:#888; margin:0;">👤 <?= htmlspecialchars($_SESSION['prenom'] . " " . $_SESSION['nom']) ?></p>
+        </div>
+        <a href="listeEmployeIndex.php" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Retour
+        </a>
     </div>
 
-    <div class="col-md-6">
-        <label class="form-label" for="name">Nom</label>
-        <input type="text" value="<?= $ep['nom'] ?>" name="nom" class="form-control" placeholder="nom" required>
+    <div class="form-card">
+        <div class="matricule-badge"><i class="bi bi-person-badge me-2"></i><?= htmlspecialchars($ep['matricule']) ?></div>
+        <h4>Modifier les informations</h4>
+        <p style="font-size:13px; color:#888; margin-bottom:20px;">Les modifications seront enregistrées immédiatement.</p>
+        <div class="divider"></div>
+
+        <?php if (!empty($succes)): ?>
+            <div class="alerte-succes"><i class="bi bi-check-circle-fill"></i> <?= $succes ?></div>
+        <?php endif; ?>
+        <?php if (!empty($erreur)): ?>
+            <div class="alerte-erreur"><i class="bi bi-exclamation-circle-fill"></i> <?= $erreur ?></div>
+        <?php endif; ?>
+
+        <form method="POST" action="modifier_employe.php?id_user=<?= $id ?>">
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Nom <span class="text-danger">*</span></label>
+                    <input type="text" name="nom" class="form-control" value="<?= htmlspecialchars($ep['nom']) ?>" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Prénom <span class="text-danger">*</span></label>
+                    <input type="text" name="prenom" class="form-control" value="<?= htmlspecialchars($ep['prenom']) ?>" required>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Téléphone <span class="text-danger">*</span></label>
+                    <input type="tel" name="tel" class="form-control" value="<?= htmlspecialchars($ep['tel']) ?>" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                    <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($ep['email']) ?>" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Mot de passe <span class="text-danger">*</span></label>
+                <input type="password" name="mdp" class="form-control"
+                       value="<?= htmlspecialchars($ep['mot_de_passe']) ?>" required>
+            </div>
+
+            <div class="mb-4">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" name="actif" id="actif"
+                           <?= $ep['actif'] ? 'checked' : '' ?>>
+                    <label class="form-check-label" for="actif">
+                        Compte actif
+                    </label>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="d-flex gap-3 justify-content-end">
+                <a href="listeEmployeIndex.php" class="btn btn-outline-secondary">
+                    <i class="bi bi-x me-1"></i>Annuler
+                </a>
+                <button type="submit" name="modif" class="btn-modifier">
+                    <i class="bi bi-check2 me-1"></i>Enregistrer les modifications
+                </button>
+            </div>
+        </form>
     </div>
-
-    
 </div>
-
-<div class="row mb-3">
-
-    <div class="col-md-6">
-        <label class="form-label" for="name">prenom</label>
-        <input type="text" value="<?= $ep['prenom'] ?>" name="prenom" class="form-control" placeholder="prenom" required>
-    </div>
-
-    <div class="col-md-6">
-        <label class="form-label" for="tel">telephone</label>
-        <input type="tel" value="<?= $ep['tel'] ?>" name="tel" class="form-control" placeholder="" required>
-    </div>
-    
-</div>
-
-<div class="row mb-3">
-
-    <div class="col-md-6">
-        <label class="form-label" for="email">email</label>
-        <input type="email" value="<?= $ep['email'] ?>" name="email" class="form-control" placeholder="example@gmail.com" required>
-    </div>
-    <div class="col-md-6">
-        <label class="form-label">Mot de passe</label>
-        <input type="password" value="<?= $ep['mot_de_passe'] ?>" name="mdp" class="form-control" id="password" required>
-    </div>
-
-    <div class="col-12">
-        <label class="form-label">Rôle</label>
-        <select class="form-select" name="role" required>
-            <option <?= $ep['role']=='Employé'?'selected':'' ?>>Employé</option>
-            <option <?= $ep['role']=='RH'?'selected':'' ?>>RH</option>
-            <option <?= $ep['role']=='Administrateur'?'selected':'' ?>>Administrateur</option>
-</select>
-
-    </div>
-    
-</div>
-
-<div class="form-check mb-4">
-<input class="form-check-input" type="checkbox" name="actif" id="activeAccount" <?= $ep['actif'] ? 'checked' : '' ?>>
-    <label class="form-check-label">
-        Activer le compte
-    </label>
-</div>
-
-<div class="d-flex justify-content-end gap-2">
-    <button type="reset" class="btn btn-danger">
-        <i class="bi bi-x-circle"></i> Annuler
-    </button>
-    <button type="submit" name="modifier" class="btn btn-primary">
-        <i class="bi bi-person-plus"></i> Modifier
-    </button>
-
-</div>
-
-</form>
-</div>
-
-</div>
-</div>
-</div>
-
-<!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-document.getElementById("editUserForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    const actif = document.getElementById("activeSwitch").checked;
-
-    if (!actif) {
-        if (!confirm("Voulez-vous vraiment désactiver ce compte ?")) {
-            return;
-        }
-    }
-
-    alert("Les informations de l'utilisateur ont été mises à jour avec succès.");
-});
-</script>
-
 </body>
 </html>

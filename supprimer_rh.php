@@ -1,146 +1,98 @@
-<?php 
-    include_once("bd.php");
-    $id = $_GET["id_user"];
-    $rq = $pdo->prepare("SELECT * FROM utilisateur WHERE id_user = ?");
-    $rq->execute([$id]);
-    $lui = $rq->fetch();
+<?php
+session_start();
+include_once("bd.php");
 
-    if(isset($_POST["sup_rh"])) {
+if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'ADMIN') {
+    header("Location: connexion.php");
+    exit();
+}
 
-    $id = $_GET["id_user"];
-    $sql = "DELETE FROM rh WHERE rh.id_user = ?";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$id]);
+if (!isset($_GET['id_user'])) {
+    header("Location: listeRHIndex.php");
+    exit();
+}
 
-    $sql = "DELETE FROM utilisateur WHERE utilisateur.id_user = ?";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$id]);
+$id = (int) $_GET['id_user'];
 
-    header('location: listeRHIndex.php');
-}else{ echo'echec';}
+$rq = $pdo->prepare("SELECT nom, prenom FROM utilisateur WHERE id_user = ?");
+$rq->execute([$id]);
+$lui = $rq->fetch(PDO::FETCH_ASSOC);
+
+if (!$lui) {
+    header("Location: listeRHIndex.php");
+    exit();
+}
+
+if (isset($_POST['sup_rh'])) {
+    try {
+        // 1. Supprimer les notifications liées
+         $stmt1 = $pdo->prepare("DELETE FROM notification WHERE id_user = ?")->execute([$id]);
+        // 2. Supprimer l'utilisateur
+        $stmt2 = $pdo->prepare("DELETE FROM utilisateur WHERE id_user = ?")->execute([$id]);
+
+        // $pdo->prepare("DELETE FROM utilisateur WHERE id_user = ?")->execute([$id]);
+        header("Location: listeRHIndex.php?succes=supprime");
+        exit();
+    } catch (Exception $e) {
+        $erreur = "Impossible de supprimer : " . $e->getMessage();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title> AG-TIME </title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Roboto:wght@500;700;900&display=swap" rel="stylesheet"> 
-
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet">
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script  source="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" >
-    </script>
-
+    <title>AG-TIME — Supprimer RH</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- Bootstrap -->
-<link href="./bootstrap/bootstrap-5.1.3-dist/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- Bootstrap Icons -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- Template Stylesheet -->
-    <link href="css/supprimer_employe.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="60x60" href="img/Logo contemporain AG-Time sur fond blanc.png">
-    
+    <style>
+        * { font-family: 'Roboto', sans-serif; }
+        body { background: #f0f2f5; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .confirm-card { background: white; border-radius: 16px; padding: 40px; max-width: 460px; width: 100%; box-shadow: 0 8px 32px rgba(0,0,0,0.1); text-align: center; }
+        .icon-danger { width: 72px; height: 72px; background: #fff5f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+        .icon-danger i { font-size: 32px; color: #e94560; }
+        .confirm-card h5 { font-weight: 700; color: #2d3436; margin-bottom: 10px; }
+        .confirm-card p { color: #636e72; font-size: 14px; }
+        .nom-employe { color: #0f3460; font-weight: 700; }
+        .avertissement { background: #fff5f5; border: 1.5px solid #f5c6cb; border-radius: 8px; padding: 10px 16px; color: #c0392b; font-size: 13px; margin: 16px 0; }
+        .btn-confirmer { background: #e94560; color: white; border: none; border-radius: 8px; padding: 12px 28px; font-size: 14px; font-weight: 600; transition: background 0.2s; }
+        .btn-confirmer:hover { background: #d63031; color: white; }
+        .btn-annuler { border-radius: 8px; padding: 12px 28px; font-size: 14px; }
+    </style>
 </head>
 <body>
-
-<div class="container-fluid" style="text-align: center;">
-    <div class="row">
-        <!-- Contenu -->
-     <form action="supprimer_rh.php" method="post">
-        <main class="col-md-10 content" >
-
-            <h3 class="mb-4 text-danger">
-                <i class="bi bi-trash-fill"></i>
-                Suppression d’un utilisateur
-            </h3>
-
-            <div class="card delete-card shadow">
-                <div class="card-body text-center">
-
-                    <i class="bi bi-exclamation-triangle-fill text-danger warning-icon"></i>
-
-                    <h5 class="mt-3">Confirmer la suppression</h5>
-
-                    <p class="mt-3">
-                        Voulez-vous vraiment supprimer l’utilisateur :
-                        <strong id="username"> <?= $lui['nom'] ?> <?= $lui['prenom'] ?> </strong> ?
-                    </p>
-
-                    <p class="text-danger fw-bold">
-                        Cette action est définitive et ne peut pas être annulée.
-                    </p>
-
-                    <div class="d-flex justify-content-center gap-3 mt-4">
-                        <button class="btn btn-secondary" onclick="annulerSuppression()">
-                            <i class="bi bi-x-circle"></i> Annuler
-                        </button>
-
-                        <!-- <button class="btn btn-danger bi bi-trash" type="submit" name="sup_e">
-                             Supprimer
-                        </button> -->
-                        
-                        <button type="submit" class="btn btn-danger" name="sup_rh">
-                            <i class="bi bi-person-plus"></i> supprimer
-                        </button>
-                    </div>
-
-                </div>
-            </div>
-
-        </main>
-     </form>
+<div class="confirm-card">
+    <div class="icon-danger">
+        <i class="bi bi-exclamation-triangle-fill"></i>
     </div>
+    <h5>Confirmer la suppression</h5>
+    <p>
+        Voulez-vous vraiment supprimer le RH :
+        <span class="nom-employe"><?= htmlspecialchars($lui['prenom'] . ' ' . $lui['nom']) ?></span> ?
+    </p>
+    <div class="avertissement">
+        <i class="bi bi-exclamation-circle me-1"></i>
+        Cette action est <strong>définitive</strong>. Toutes les validations liées à ce RH seront supprimées.
+    </div>
+
+    <?php if (isset($erreur)): ?>
+        <div class="alert alert-danger"><?= $erreur ?></div>
+    <?php endif; ?>
+
+    <form method="POST" action="supprimer_rh.php?id_user=<?= $id ?>">
+        <div class="d-flex gap-3 justify-content-center mt-3">
+            <a href="listeRHIndex.php" class="btn btn-outline-secondary btn-annuler">
+                <i class="bi bi-x me-1"></i>Annuler
+            </a>
+            <button type="submit" name="sup_rh" class="btn-confirmer">
+                <i class="bi bi-trash me-1"></i>Supprimer définitivement
+            </button>
+        </div>
+    </form>
 </div>
-
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- JS -->
-<script src="script.js"></script>
-
 </body>
 </html>
-<script>
-    function annulerSuppression() {
-    alert("Suppression annulée.");
-    // Redirection vers la liste
-    window.location.href = "listeRHIndex.php";
-}
-
-function confirmerSuppression() {
-    const nom = document.getElementById("username").innerText;
-
-    // Simulation suppression
-    alert("L'utilisateur " + nom + " a été supprimé avec succès.");
-
-    // Redirection après suppression
-    window.location.href = "dashboardadmin2.php";
-}
-
-</script>
