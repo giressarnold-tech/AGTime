@@ -234,6 +234,28 @@ if (isset($_GET['voir_notifs'])) {
         </div>
     </div>
 
+    <form method="GET" action="imprimer_periode.php" class="row g-2 mb-3">
+        <div class="col-md-3">
+            <select name="type" class="form-select" required>
+                <option value="">-- Période --</option>
+                <option value="jour">Jour</option>
+                <option value="mois">Mois</option>
+                <option value="annee">Année</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <input type="date" name="date" class="form-control" required>
+        </div>
+
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-dark w-100">
+                <i class="bi bi-download"></i> Télécharger
+            </button>
+        </div>
+    </form>
+
+
     <!-- TABLEAU UTILISATEURS -->
     <div class="card shadow">
         <div class="card-header d-flex justify-content-between align-items-center">

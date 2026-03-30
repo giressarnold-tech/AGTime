@@ -260,6 +260,16 @@ if (isset($_GET['voir_notifs'])) {
                     </div>
                 </li>
 
+                <!-- Statistiques -->
+                <li class="nav-item">
+                    <a class="nav-link" href="statistiques.php">
+                        <i class="bi bi-bar-chart-line me-1"></i>Statistiques
+                    </a>
+                </li>
+
+                </li>
+
+                <!-- Déconnexion -->
                 <li class="nav-item">
                     <a class="nav-link" href="logout.php">
                         <i class="bi bi-box-arrow-right me-1"></i>Déconnexion
@@ -333,6 +343,27 @@ if (isset($_GET['voir_notifs'])) {
         </div>
     </div>
 
+    <form method="GET" action="imprimer_periode.php" class="row g-2 mb-3">
+        <div class="col-md-3">
+            <select name="type" class="form-select" required>
+                <option value="">-- Période --</option>
+                <option value="jour">Jour</option>
+                <option value="mois">Mois</option>
+                <option value="annee">Année</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <input type="date" name="date" class="form-control" required>
+        </div>
+
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-dark w-100">
+                <i class="bi bi-download"></i> Télécharger
+            </button>
+        </div>
+    </form>
+
     <!-- TABLEAU DES DEMANDES -->
     <div class="card shadow">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -382,6 +413,10 @@ if (isset($_GET['voir_notifs'])) {
                                         <?php endif; ?>
                                     </td>
                                     <td class="text-center">
+                                        <a href="imprimer.php?id=<?= $d['id_demande'] ?>" 
+                                            class="btn btn-sm btn-outline-dark" target="_blank">
+                                            <i class="bi bi-printer"></i>
+                                        </a>
                                         <?php if ($d['statut'] === 'EN_ATTENTE'): ?>
                                             <button class="btn btn-sm btn-outline-primary"
                                                 onclick="ouvrirModal(
@@ -508,3 +543,4 @@ setInterval(function() {
 </script>
 </body>
 </html>
+
