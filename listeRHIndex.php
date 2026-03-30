@@ -14,6 +14,12 @@ $erreur = "";
 if (isset($_GET['supprimer'])) {
     $id = (int) $_GET['supprimer'];
     try {
+
+         // 1. Supprimer les notifications liées
+         $stmt1 = $pdo->prepare("DELETE FROM notification WHERE id_user = ?")->execute([$id]);
+        // 2. Supprimer l'utilisateur
+        $stmt2 = $pdo->prepare("DELETE FROM utilisateur WHERE id_user = ?")->execute([$id]);
+
         $pdo->prepare("DELETE FROM utilisateur WHERE id_user = ?")->execute([$id]);
         $succes = "Compte RH supprimé avec succès.";
     } catch (Exception $e) {

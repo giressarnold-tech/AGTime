@@ -76,64 +76,64 @@ if (isset($_POST["ajt"])) {
                 $pdo->commit();
 
 
-                // Envoi email de notification
-                try {
-                    $mail = new PHPMailer(true);
-                    $mail->isSMTP();
-                    $mail->Host       = 'smtp.gmail.com';
-                    $mail->SMTPAuth   = true;
-                    $mail->Username   = 'votre.email@gmail.com';   // ← votre Gmail
-                    $mail->Password   = 'xxxx xxxx xxxx xxxx';     // ← mot de passe application
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                    $mail->Port       = 587;
-                    $mail->CharSet    = 'UTF-8';
+            // Envoi email de notification
+            try {
+                $mail = new PHPMailer(true);
+                $mail->isSMTP();
+                $mail->Host       = 'smtp.gmail.com';
+                $mail->SMTPAuth   = true;
+                $mail->Username   = 'giressarnold@gmail.com';   // ← votre Gmail
+                $mail->Password   = 'vcwv uwmz vjpi bjdc';     // ← mot de passe application
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port       = 587;
+                $mail->CharSet    = 'UTF-8';
 
-                    $mail->setFrom('votre.email@gmail.com', 'AG-TIME');
-                    $mail->addAddress($email, $prenom . ' ' . $nom);
+                $mail->setFrom('giressarnold@gmail.com', 'AG-TIME');
+                $mail->addAddress($email, $prenom . ' ' . $nom);
 
-                    $mail->isHTML(true);
-                    $mail->Subject = 'Création de votre compte AG-TIME';
-                    $mail->Body    = "
-                        <div style='font-family:Arial,sans-serif;max-width:500px;margin:auto;border:1px solid #ddd;border-radius:8px;overflow:hidden'>
-                        <div style='background:#0f3460;padding:20px;text-align:center'>
-                            <h2 style='color:#fff;margin:0'>AG-TIME</h2>
-                        </div>
-                        <div style='padding:24px'>
-                            <p>Bonjour <strong>$prenom $nom</strong>,</p>
-                            <p>Votre compte a été créé avec succès. Voici vos identifiants :</p>
-                            <table style='width:100%;border-collapse:collapse;margin:16px 0'>
-                            <tr style='background:#f0f2f5'>
-                                <td style='padding:10px;font-weight:bold;border:1px solid #ddd'>Matricule</td>
-                                <td style='padding:10px;border:1px solid #ddd'><strong>$mat</strong></td>
-                            </tr>
-                            <tr>
-                                <td style='padding:10px;font-weight:bold;border:1px solid #ddd'>Email</td>
-                                <td style='padding:10px;border:1px solid #ddd'>$email</td>
-                            </tr>
-                            <tr style='background:#f0f2f5'>
-                                <td style='padding:10px;font-weight:bold;border:1px solid #ddd'>Mot de passe</td>
-                                <td style='padding:10px;border:1px solid #ddd'>$mdp</td>
-                            </tr>
-                            <tr>
-                                <td style='padding:10px;font-weight:bold;border:1px solid #ddd'>Rôle</td>
-                                <td style='padding:10px;border:1px solid #ddd'>$ft</td>
-                            </tr>
-                            </table>
-                            <p style='color:#888;font-size:13px'>Veuillez changer votre mot de passe après votre première connexion.</p>
-                        </div>
-                        <div style='background:#f0f2f5;padding:12px;text-align:center;font-size:12px;color:#888'>
-                            &copy; AG-TIME — Ne pas répondre à cet email
-                        </div>
-                        </div>
-                    ";
-                    $mail->AltBody = "Bonjour $prenom $nom,\nMatricule: $mat\nEmail: $email\nMot de passe: $mdp\nRôle: $ft";
+                $mail->isHTML(true);
+                $mail->Subject = 'Création de votre compte AG-TIME';
+                $mail->Body    = "
+                    <div style='font-family:Arial,sans-serif;max-width:500px;margin:auto;border:1px solid #ddd;border-radius:8px;overflow:hidden'>
+                    <div style='background:#0f3460;padding:20px;text-align:center'>
+                        <h2 style='color:#fff;margin:0'>AG-TIME</h2>
+                    </div>
+                    <div style='padding:24px'>
+                        <p>Bonjour <strong>$prenom $nom</strong>,</p>
+                        <p>Votre compte a été créé avec succès. Voici vos identifiants :</p>
+                        <table style='width:100%;border-collapse:collapse;margin:16px 0'>
+                        <tr style='background:#f0f2f5'>
+                            <td style='padding:10px;font-weight:bold;border:1px solid #ddd'>Matricule</td>
+                            <td style='padding:10px;border:1px solid #ddd'><strong>$mat</strong></td>
+                        </tr>
+                        <tr>
+                            <td style='padding:10px;font-weight:bold;border:1px solid #ddd'>Email</td>
+                            <td style='padding:10px;border:1px solid #ddd'>$email</td>
+                        </tr>
+                        <tr style='background:#f0f2f5'>
+                            <td style='padding:10px;font-weight:bold;border:1px solid #ddd'>Mot de passe</td>
+                            <td style='padding:10px;border:1px solid #ddd'>$mdp</td>
+                        </tr>
+                        <tr>
+                            <td style='padding:10px;font-weight:bold;border:1px solid #ddd'>Rôle</td>
+                            <td style='padding:10px;border:1px solid #ddd'>$ft</td>
+                        </tr>
+                        </table>
+                        <p style='color:#888;font-size:13px'>Veuillez changer votre mot de passe après votre première connexion.</p>
+                    </div>
+                    <div style='background:#f0f2f5;padding:12px;text-align:center;font-size:12px;color:#888'>
+                        &copy; AG-TIME — Ne pas répondre à cet email
+                    </div>
+                    </div>
+                ";
+                $mail->AltBody = "Bonjour $prenom $nom,\nMatricule: $mat\nEmail: $email\nMot de passe: $mdp\nRôle: $ft";
 
-                    $mail->send();
+                $mail->send();
 
-                } catch (Exception $e) {
-                    // L'email a échoué mais le compte est créé — on logue sans bloquer
-                    error_log("Erreur envoi email: " . $mail->ErrorInfo);
-                }
+            } catch (Exception $e) {
+                // L'email a échoué mais le compte est créé — on logue sans bloquer
+                error_log("Erreur envoi email: " . $mail->ErrorInfo);
+            }
 
                 // // Envoi email
                 // $sujet = "Création de votre compte AG-TIME";
