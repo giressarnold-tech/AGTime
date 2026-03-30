@@ -45,6 +45,7 @@ if (isset($_POST['ok'])) {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -254,7 +255,7 @@ if (isset($_POST['ok'])) {
 
     <p class="lien-inscription">
         Pas encore de compte ?
-        <a href="enregistrement.html">S'enregistrer</a>
+        <a href="enregistrement.php">S'enregistrer</a>
     </p>
 
 </div>
