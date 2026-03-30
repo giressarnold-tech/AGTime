@@ -1,19 +1,18 @@
 <?php
 session_start();
+include_once("bd.php");
 
-require 'PHPMailer/src/PHPMailer.php';
-require 'PHPMailer/src/SMTP.php';
-require 'PHPMailer/src/Exception.php';
+require 'vendor/autoload.php';
+
+// require 'PHPMailer/src/PHPMailer.php';
+// require 'PHPMailer/src/SMTP.php';
+// require 'PHPMailer/src/Exception.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-$mail = new PHPMailer(true);
-var_dump($mail);
-exit;
-include_once("bd.php");
-require 'vendor/autoload.php';
-
-include_once("bd.php");
+ $mail = new PHPMailer(true);
+// var_dump($mail);
+// exit;
 
 if (!isset($_SESSION['id_user']) || !in_array($_SESSION['role'], ['RH', 'ADMIN'])) {
     header("Location: connexion.php");
@@ -73,59 +72,120 @@ if (isset($_POST["ajt"])) {
                 }
 
                 $pdo->prepare("UPDATE utilisateur SET matricule = ? WHERE id_user = ?")->execute([$mat, $u_id]);
+                
                 $pdo->commit();
 
-                // Envoi email
-                $sujet = "Création de votre compte AG-TIME";
-                $message = "
-                Bonjour $prenom $nom,
-                Votre compte a été créé avec succès sur la plateforme AG-TIME.
-                Voici vos identifiants de connexion :
 
-                Email : $email
-                Mot de passe : $mdp
-                Matricule : $mat
-
-                Nous vous recommandons de modifier votre mot de passe après votre première connexion.
-
-                Cordialement,
-                L'équipe AG-TIME
-                ";
-
-                $headers = "From: no-reply@agtime.com";
-
-
-                $mail = new PHPMailer(true);
-
+                // Envoi email de notification
                 try {
+                    $mail = new PHPMailer(true);
                     $mail->isSMTP();
-                    $mail->Host = 'smtp.gmail.com';
-                    $mail->SMTPAuth = true;
-                    $mail->Username = 'tonemail@gmail.com';
-                    $mail->Password = 'mot_de_passe_application'; // ⚠️ important
-                    $mail->SMTPSecure = 'tls';
-                    $mail->Port = 587;
+                    $mail->Host       = 'smtp.gmail.com';
+                    $mail->SMTPAuth   = true;
+                    $mail->Username   = 'votre.email@gmail.com';   // ← votre Gmail
+                    $mail->Password   = 'xxxx xxxx xxxx xxxx';     // ← mot de passe application
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port       = 587;
+                    $mail->CharSet    = 'UTF-8';
 
-                    $mail->setFrom('tonemail@gmail.com', 'AG-TIME');
-                    $mail->addAddress($email);
+                    $mail->setFrom('votre.email@gmail.com', 'AG-TIME');
+                    $mail->addAddress($email, $prenom . ' ' . $nom);
 
                     $mail->isHTML(true);
-                    $mail->Subject = 'Votre compte AG-TIME';
-
-                    $mail->Body = "
-                        Bonjour $prenom,<br><br>
-                        Votre compte a été créé.<br><br>
-                        Email : $email <br>
-                        Mot de passe : $mdp <br>
-                        Matricule : $mat <br><br>
-                        Merci de vous connecter.
+                    $mail->Subject = 'Création de votre compte AG-TIME';
+                    $mail->Body    = "
+                        <div style='font-family:Arial,sans-serif;max-width:500px;margin:auto;border:1px solid #ddd;border-radius:8px;overflow:hidden'>
+                        <div style='background:#0f3460;padding:20px;text-align:center'>
+                            <h2 style='color:#fff;margin:0'>AG-TIME</h2>
+                        </div>
+                        <div style='padding:24px'>
+                            <p>Bonjour <strong>$prenom $nom</strong>,</p>
+                            <p>Votre compte a été créé avec succès. Voici vos identifiants :</p>
+                            <table style='width:100%;border-collapse:collapse;margin:16px 0'>
+                            <tr style='background:#f0f2f5'>
+                                <td style='padding:10px;font-weight:bold;border:1px solid #ddd'>Matricule</td>
+                                <td style='padding:10px;border:1px solid #ddd'><strong>$mat</strong></td>
+                            </tr>
+                            <tr>
+                                <td style='padding:10px;font-weight:bold;border:1px solid #ddd'>Email</td>
+                                <td style='padding:10px;border:1px solid #ddd'>$email</td>
+                            </tr>
+                            <tr style='background:#f0f2f5'>
+                                <td style='padding:10px;font-weight:bold;border:1px solid #ddd'>Mot de passe</td>
+                                <td style='padding:10px;border:1px solid #ddd'>$mdp</td>
+                            </tr>
+                            <tr>
+                                <td style='padding:10px;font-weight:bold;border:1px solid #ddd'>Rôle</td>
+                                <td style='padding:10px;border:1px solid #ddd'>$ft</td>
+                            </tr>
+                            </table>
+                            <p style='color:#888;font-size:13px'>Veuillez changer votre mot de passe après votre première connexion.</p>
+                        </div>
+                        <div style='background:#f0f2f5;padding:12px;text-align:center;font-size:12px;color:#888'>
+                            &copy; AG-TIME — Ne pas répondre à cet email
+                        </div>
+                        </div>
                     ";
+                    $mail->AltBody = "Bonjour $prenom $nom,\nMatricule: $mat\nEmail: $email\nMot de passe: $mdp\nRôle: $ft";
 
                     $mail->send();
 
                 } catch (Exception $e) {
-                    echo "Erreur mail : " . $mail->ErrorInfo;
+                    // L'email a échoué mais le compte est créé — on logue sans bloquer
+                    error_log("Erreur envoi email: " . $mail->ErrorInfo);
                 }
+
+                // // Envoi email
+                // $sujet = "Création de votre compte AG-TIME";
+                // $message = "
+                // Bonjour $prenom $nom,
+                // Votre compte a été créé avec succès sur la plateforme AG-TIME.
+                // Voici vos identifiants de connexion :
+
+                // Email : $email
+                // Mot de passe : $mdp
+                // Matricule : $mat
+
+                // Nous vous recommandons de modifier votre mot de passe après votre première connexion.
+
+                // Cordialement,
+                // L'équipe AG-TIME
+                // ";
+
+                // $headers = "From: no-reply@agtime.com";
+
+
+                // $mail = new PHPMailer(true);
+
+                // try {
+                //     $mail->isSMTP();
+                //     $mail->Host = 'smtp.gmail.com';
+                //     $mail->SMTPAuth = true;
+                //     $mail->Username = 'tonemail@gmail.com';
+                //     $mail->Password = 'mot_de_passe_application'; // ⚠️ important
+                //     $mail->SMTPSecure = 'tls';
+                //     $mail->Port = 587;
+
+                //     $mail->setFrom('tonemail@gmail.com', 'AG-TIME');
+                //     $mail->addAddress($email);
+
+                //     $mail->isHTML(true);
+                //     $mail->Subject = 'Votre compte AG-TIME';
+
+                //     $mail->Body = "
+                //         Bonjour $prenom,<br><br>
+                //         Votre compte a été créé.<br><br>
+                //         Email : $email <br>
+                //         Mot de passe : $mdp <br>
+                //         Matricule : $mat <br><br>
+                //         Merci de vous connecter.
+                //     ";
+
+                //     $mail->send();
+
+                // } catch (Exception $e) {
+                //     echo "Erreur mail : " . $mail->ErrorInfo;
+                // }
                 $succes = "Compte créé avec succès ! Matricule : <strong>" . $mat . "</strong>";
 
             } catch (Exception $e) {
