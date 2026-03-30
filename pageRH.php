@@ -261,11 +261,11 @@ if (isset($_GET['voir_notifs'])) {
                 </li>
 
                 <!-- Statistiques -->
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link" href="statistiques.php">
                         <i class="bi bi-bar-chart-line me-1"></i>Statistiques
                     </a>
-                </li>
+                </li> -->
 
                 </li>
 
